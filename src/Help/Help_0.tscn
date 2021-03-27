@@ -1,0 +1,76 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://assets/tiles/8.png" type="Texture" id=1]
+[ext_resource path="res://assets/tiles/6.png" type="Texture" id=2]
+[ext_resource path="res://assets/tiles/3.png" type="Texture" id=3]
+[ext_resource path="res://assets/tiles/1.png" type="Texture" id=4]
+[ext_resource path="res://assets/tiles/2.png" type="Texture" id=5]
+[ext_resource path="res://assets/tiles/35.png" type="Texture" id=6]
+[ext_resource path="res://assets/tiles/24.png" type="Texture" id=7]
+[ext_resource path="res://assets/tiles/38.png" type="Texture" id=8]
+[ext_resource path="res://assets/tiles/40.png" type="Texture" id=9]
+
+[node name="Help" type="Node2D"]
+
+[node name="1" type="Sprite" parent="."]
+scale = Vector2( 0.2, 0.2 )
+texture = ExtResource( 4 )
+centered = false
+
+[node name="2" type="Sprite" parent="."]
+position = Vector2( 124, 0 )
+scale = Vector2( 0.2, 0.2 )
+texture = ExtResource( 5 )
+centered = false
+
+[node name="3" type="Sprite" parent="."]
+position = Vector2( 248, 0 )
+scale = Vector2( 0.2, 0.2 )
+texture = ExtResource( 2 )
+centered = false
+
+[node name="4" type="Sprite" parent="."]
+position = Vector2( 372, 0 )
+scale = Vector2( 0.2, 0.2 )
+texture = ExtResource( 6 )
+centered = false
+
+[node name="5" type="Sprite" parent="."]
+position = Vector2( 496, 0 )
+scale = Vector2( 0.2, 0.2 )
+texture = ExtResource( 8 )
+centered = false
+
+[node name="6" type="Sprite" parent="."]
+position = Vector2( 0, 152 )
+scale = Vector2( 0.2, 0.2 )
+texture = ExtResource( 3 )
+centered = false
+
+[node name="7" type="Sprite" parent="."]
+position = Vector2( 124, 154 )
+scale = Vector2( 0.2, 0.2 )
+texture = ExtResource( 1 )
+centered = false
+
+[node name="8" type="Sprite" parent="."]
+position = Vector2( 248, 154 )
+scale = Vector2( 0.2, 0.2 )
+texture = ExtResource( 9 )
+centered = false
+
+[node name="9" type="Sprite" parent="."]
+position = Vector2( 372, 154 )
+scale = Vector2( 0.2, 0.2 )
+texture = ExtResource( 1 )
+centered = false
+
+[node name="10" type="Sprite" parent="."]
+position = Vector2( 496, 154 )
+scale = Vector2( 0.2, 0.2 )
+texture = ExtResource( 7 )
+centered = false
+
+[node name="Line2D" type="Line2D" parent="."]
+points = PoolVector2Array( 186, 231, 186, 385, 434, 385, 434, 231 )
+width = 15.0

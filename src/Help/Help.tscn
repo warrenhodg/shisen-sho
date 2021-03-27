@@ -1,0 +1,76 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://src/Help/Help_0.tscn" type="PackedScene" id=1]
+[ext_resource path="res://assets/shanghai.tres" type="DynamicFont" id=2]
+[ext_resource path="res://assets/background.png" type="Texture" id=3]
+[ext_resource path="res://src/Help/Help_1.tscn" type="PackedScene" id=4]
+[ext_resource path="res://src/MainMenu/Button.tscn" type="PackedScene" id=5]
+[ext_resource path="res://src/Help/Help.gd" type="Script" id=6]
+[ext_resource path="res://src/Help/Help_2.tscn" type="PackedScene" id=7]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource( 6 )
+
+[node name="background" type="Sprite" parent="."]
+position = Vector2( 512, 384 )
+texture = ExtResource( 3 )
+
+[node name="GridContainer" type="VSplitContainer" parent="background"]
+anchor_right = 1.0
+anchor_bottom = 0.3
+margin_left = -512.0
+margin_top = -384.0
+margin_right = -512.0
+margin_bottom = -384.0
+custom_constants/separation = 20
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Title" type="Label" parent="background/GridContainer"]
+margin_right = 1024.0
+margin_bottom = 81.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_fonts/font = ExtResource( 2 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "SHISEN-SHO"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Instructions" type="Label" parent="background/GridContainer"]
+margin_top = 101.0
+margin_right = 1024.0
+margin_bottom = 266.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_fonts/font = ExtResource( 2 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Remove matching tiles
+with at most 3 lines"
+align = 1
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Help_0" parent="background" instance=ExtResource( 1 )]
+position = Vector2( -304.781, -80.9574 )
+
+[node name="Help_1" parent="background" instance=ExtResource( 4 )]
+visible = false
+position = Vector2( -239.698, -104.768 )
+
+[node name="Help_2" parent="background" instance=ExtResource( 7 )]
+visible = false
+position = Vector2( -247.634, -109.531 )
+
+[node name="Next" parent="background" instance=ExtResource( 5 )]
+margin_left = 368.866
+margin_top = 251.567
+margin_right = 455.219
+margin_bottom = 342.567
+text = ">"
+[connection signal="pressed" from="background/Next" to="." method="_on_Next_pressed"]
