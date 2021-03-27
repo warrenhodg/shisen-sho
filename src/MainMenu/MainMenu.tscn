@@ -102,7 +102,7 @@ margin_bottom = 416.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Exit"
-[connection signal="pressed" from="Window/GridContainer/GridContainer/btn_continue" to="." method="_on_btn_small_pressed"]
+[connection signal="pressed" from="Window/GridContainer/GridContainer/btn_continue" to="." method="_on_btn_continue_pressed"]
 [connection signal="pressed" from="Window/GridContainer/GridContainer/btn_small" to="." method="_on_btn_small_pressed"]
 [connection signal="pressed" from="Window/GridContainer/GridContainer/btn_big" to="." method="_on_btn_big_pressed"]
 [connection signal="pressed" from="Window/GridContainer/GridContainer/btn_help" to="." method="_on_btn_help_pressed"]

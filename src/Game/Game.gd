@@ -32,8 +32,13 @@ var highlighted = null
 func _ready() -> void:
 	load_tile_textures()
 	
-	tile_count_x = Global.tile_count_x
-	tile_count_y = Global.tile_count_y
+	if Global.tile_count_x == Global.LOAD_GAME:
+		load_game()
+		return
+		
+	new_game()
+	
+func calc_sizes() -> void:
 	var desired_tile_width = float((SCREEN_SIZE_X - (2 * GRID_MARGIN_WIDTH)) / tile_count_x)
 	var desired_tile_height = float((SCREEN_SIZE_Y - (2 * GRID_MARGIN_HEIGHT)) / tile_count_y)
 	var zoom_width = desired_tile_width / ORIGINAL_TILE_WIDTH
@@ -43,6 +48,11 @@ func _ready() -> void:
 	tile_height = ORIGINAL_TILE_HEIGHT * tile_zoom
 	tile_left = (SCREEN_SIZE_X - (tile_width * tile_count_x)) / 2
 	tile_top = (SCREEN_SIZE_Y - (tile_height * tile_count_y)) / 2
+	
+func new_game() -> void:
+	tile_count_x = Global.tile_count_x
+	tile_count_y = Global.tile_count_y
+	calc_sizes()
 	generate_random_board()
 	
 func load_tile_textures() -> void:
@@ -58,7 +68,7 @@ func generate_random_board() -> void:
 
 	reset_board()
 
-	remaining = board_indexes.size()
+	remaining = 0
 	
 	var pair_count: = board_indexes.size() / 2
 	for pair in range(pair_count):
@@ -105,6 +115,8 @@ func create_tile(tile_type: int, position: int) -> void:
 	board_tiles[position] = tile_instance 
 	add_child(tile_instance)
 	same_tiles[tile_type].append(position)
+	
+	remaining += 1
 
 func highlight_tile_type(tile_type: int) -> void:
 	var tiles = same_tiles[tile_type]
@@ -298,12 +310,20 @@ func show_joiner(points: Array) -> void:
 
 func check_game_over() -> void:
 	if remaining == 0:
+		delete_save_game()
 		Global.game_status = "You WIN!"
 		get_tree().change_scene("res://src/MainMenu/GameOver.tscn")
+		return
+		
+	if not can_move():
+		delete_save_game()
+		Global.game_status = "No more moves"
+		get_tree().change_scene("res://src/MainMenu/GameOver.tscn")
+		return
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
-		get_tree().change_scene("res://src/MainMenu/MainMenu.tscn")
+		quit_game()
 		
 	if event is InputEventMouseButton:
 		var mouse_event: = event as InputEventMouseButton
@@ -314,6 +334,10 @@ func _input(event: InputEvent) -> void:
 					handle_left_click(mouse_event)
 				BUTTON_RIGHT:
 					handle_right_click(mouse_event)
+
+func quit_game() -> void:
+	save_game()
+	get_tree().change_scene("res://src/MainMenu/MainMenu.tscn")
 
 func handle_right_click(mouse_event: InputEventMouseButton) -> void:
 	var x: int = (mouse_event.position.x - tile_left) / tile_width
@@ -394,10 +418,71 @@ func handle_left_click(mouse_event: InputEventMouseButton) -> void:
 			Vector2(x2, y2)])
 		check_game_over()
 		return
-	
+
 	print("Cannot join")
-			
+
 func _notification(what) -> void:
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
 		get_tree().set_auto_accept_quit(false)
 		get_tree().change_scene("res://src/MainMenu/MainMenu.tscn")
+
+func delete_save_game() -> void:
+	var g = File.new()
+	if g.file_exists(Global.SAVE_FILE_NAME):
+		var d = Directory.new()
+		d.remove(Global.SAVE_FILE_NAME)
+		return
+	
+func save_game() -> void:
+	var g = File.new()
+	g.open(Global.SAVE_FILE_NAME, File.WRITE)
+	var data: Dictionary = {}
+	data["width"] = tile_count_x
+	data["height"] = tile_count_y
+	data["board"] = board_indexes
+	g.store_line(to_json(data))
+	g.close()
+	
+func load_game() -> void:
+	var g = File.new()
+	if not g.file_exists(Global.SAVE_FILE_NAME):
+		return
+		
+	g.open(Global.SAVE_FILE_NAME, File.READ)
+	var data = parse_json(g.get_line())
+	tile_count_x = data["width"]
+	tile_count_y = data["height"]
+	var board = data["board"]
+	calc_sizes()
+	reset_board()
+
+	remaining = 0
+	for position in range(board.size()):
+		var tile_type = board[position]
+		if tile_type == null:
+			continue
+		create_tile(tile_type, position)
+
+func can_move() -> bool:
+	for position in range(board_indexes.size()):
+		var tile_type = board_indexes[position]
+		if tile_type == null:
+			continue
+		var x1 = position % tile_count_x
+		var y1 = position / tile_count_x
+		
+		var tiles = same_tiles[tile_type]
+		for i in range(tiles.size()):
+			var other_position = tiles[i]
+			if other_position <= position:
+				continue
+			if board_indexes[other_position] == null:
+				continue
+			
+			var x2 = other_position % tile_count_x
+			var y2 = other_position / tile_count_x
+			if join_row(x1, y1, x2, y2) != CANNOT_JOIN:
+				return true
+			if join_col(x1, y1, x2, y2) != CANNOT_JOIN:
+				return true
+	return false
