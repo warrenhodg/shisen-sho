@@ -11,3 +11,4 @@ data_*/
 # Binaries
 bin/
 android/
+build/

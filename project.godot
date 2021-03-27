@@ -27,7 +27,8 @@ run/disable_stdout=true
 run/disable_stderr=true
 run/low_processor_mode=true
 boot_splash/image="res://assets/splash.png"
-config/icon="res://icon.png"
+config/icon="res://assets/icon.png"
+config/windows_native_icon="res://assets/icon.ico"
 
 [autoload]
 

@@ -10,6 +10,7 @@ const GRID_MARGIN_WIDTH = 20
 const GRID_MARGIN_HEIGHT = 20
 const CANNOT_JOIN = -2
 const LINE_BASE_WIDTH = 50
+const LONG_PRESS_MS = 500
 
 var rng = RandomNumberGenerator.new()
 var tile_blueprint: = preload("res://src/Game/Tile.tscn")
@@ -27,6 +28,7 @@ var board_tiles: Array
 var selected = null
 var remaining: int
 var highlighted = null
+var mouse_down_time = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -329,11 +331,23 @@ func _input(event: InputEvent) -> void:
 		var mouse_event: = event as InputEventMouseButton
 
 		if mouse_event.pressed:
+			mouse_down_time = OS.get_ticks_msec()
+			return
+			
+		else:
 			match mouse_event.button_index:
 				BUTTON_LEFT:
+					var delta_msec = OS.get_ticks_msec() - mouse_down_time
+					if delta_msec > LONG_PRESS_MS:
+						handle_right_click(mouse_event)
+						return
+					
 					handle_left_click(mouse_event)
+					return
+					
 				BUTTON_RIGHT:
 					handle_right_click(mouse_event)
+					return
 
 func quit_game() -> void:
 	save_game()
