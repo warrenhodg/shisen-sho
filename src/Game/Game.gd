@@ -14,6 +14,7 @@ const LINE_BASE_WIDTH = 50
 var rng = RandomNumberGenerator.new()
 var tile_blueprint: = preload("res://src/Game/Tile.tscn")
 var tile_textures: Array
+var same_tiles: Dictionary
 var tile_count_x: int
 var tile_count_y: int
 var tile_zoom: float
@@ -25,6 +26,7 @@ var board_indexes: Array
 var board_tiles: Array
 var selected = null
 var remaining: int
+var highlighted = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -71,6 +73,10 @@ func reset_board() -> void:
 	var tile_count: = tile_count_x * tile_count_y
 	board_indexes.resize(tile_count)
 	board_tiles.resize(tile_count)
+	same_tiles.clear()
+	
+	for i in range(TILE_TYPE_COUNT):
+		same_tiles[i] = []
 
 	for i in range(tile_count):
 		board_indexes[i] = null
@@ -98,8 +104,39 @@ func create_tile(tile_type: int, position: int) -> void:
 	board_indexes[position] = tile_type
 	board_tiles[position] = tile_instance 
 	add_child(tile_instance)
+	same_tiles[tile_type].append(position)
 
-func highlight_tile(position) -> void:
+func highlight_tile_type(tile_type: int) -> void:
+	var tiles = same_tiles[tile_type]
+	if tiles == null || tiles.size() == 0:
+		return
+		
+	for i in range(tiles.size()):
+		var position = tiles[i]
+		var tile = board_tiles[position]
+		if tile == null:
+			continue
+
+		tile.modulate.r8 = 255
+		tile.modulate.g8 = 255
+		tile.modulate.b8 = 128
+
+func dehighlight_tile_type(tile_type: int) -> void:
+	var tiles = same_tiles[tile_type]
+	if tiles == null || tiles.size() == 0:
+		return
+		
+	for i in range(tiles.size()):
+		var position = tiles[i]
+		var tile = board_tiles[position]
+		if tile == null:
+			continue
+
+		tile.modulate.r8 = 255
+		tile.modulate.g8 = 255
+		tile.modulate.b8 = 255
+
+func select_tile(position) -> void:
 	if position == null:
 		return
 
@@ -107,10 +144,11 @@ func highlight_tile(position) -> void:
 	if tile == null:
 		return
 
+	tile.modulate.r8 = 255
 	tile.modulate.g8 = 196
 	tile.modulate.b8 = 196
 
-func dehighlight_tile(position) -> void:
+func deselect_tile(position) -> void:
 	if position == null:
 		return
 
@@ -118,6 +156,7 @@ func dehighlight_tile(position) -> void:
 	if tile == null:
 		return
 
+	tile.modulate.r8 = 255
 	tile.modulate.g8 = 255
 	tile.modulate.b8 = 255
 
@@ -269,69 +308,94 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		var mouse_event: = event as InputEventMouseButton
 
-		if mouse_event.button_index == BUTTON_LEFT && mouse_event.pressed:
-			var x: int = (mouse_event.position.x - tile_left) / tile_width
-			var y: int = (mouse_event.position.y - tile_top) / tile_height
-			if x < 0 || y < 0 || x >= tile_count_x || y >= tile_count_y:
-				return
+		if mouse_event.pressed:
+			match mouse_event.button_index:
+				BUTTON_LEFT:
+					handle_left_click(mouse_event)
+				BUTTON_RIGHT:
+					handle_right_click(mouse_event)
 
-			var position: = x + y * tile_count_x
-			if board_indexes[position] == null:
-				return
+func handle_right_click(mouse_event: InputEventMouseButton) -> void:
+	var x: int = (mouse_event.position.x - tile_left) / tile_width
+	var y: int = (mouse_event.position.y - tile_top) / tile_height
+	if x < 0 || y < 0 || x >= tile_count_x || y >= tile_count_y:
+		return
 
-			if selected == null:
-				selected = position
-				highlight_tile(selected)
-				return
-			
-			if selected == position:
-				dehighlight_tile(selected)
-				selected = null
-				return
-				
-			if board_indexes[selected] != board_indexes[position]:
-				dehighlight_tile(selected)
-				selected = position
-				highlight_tile(selected)
-				return
+	if highlighted != null:
+		dehighlight_tile_type(highlighted)
+		
+	var position: = x + y * tile_count_x
+	var b = board_indexes[position]
+	if b == null || b == highlighted:
+		highlighted = null
+		return
+		
+	highlighted = b
+	highlight_tile_type(highlighted)
 
-			var x1 = selected % tile_count_x
-			var y1 = selected / tile_count_x
-			var x2 = x
-			var y2 = y
-			
-			var j: int
-			j = join_row(x1, y1, x2, y2)
-			if j != CANNOT_JOIN:
-				print("Joining on row ", j)
-				dehighlight_tile(selected)
-				remove_tile(selected)
-				remove_tile(position)
-				selected = null
-				show_joiner([
-					Vector2(x1, y1),
-					Vector2(x1, j),
-					Vector2(x2, j),
-					Vector2(x2, y2)])
-				check_game_over()
-				return
-			
-			j = join_col(x1, y1, x2, y2)
-			if j != CANNOT_JOIN:
-				print("Joining on col ", j)
-				dehighlight_tile(selected)
-				remove_tile(selected)
-				remove_tile(position)
-				selected = null
-				show_joiner([
-					Vector2(x1, y1),
-					Vector2(j, y1),
-					Vector2(j, y2),
-					Vector2(x2, y2)])
-				check_game_over()
-				return
-			
-			print("Cannot join")
+func handle_left_click(mouse_event: InputEventMouseButton) -> void:
+	var x: int = (mouse_event.position.x - tile_left) / tile_width
+	var y: int = (mouse_event.position.y - tile_top) / tile_height
+	if x < 0 || y < 0 || x >= tile_count_x || y >= tile_count_y:
+		return
+
+	var position: = x + y * tile_count_x
+	if board_indexes[position] == null:
+		return
+
+	if selected == null:
+		selected = position
+		select_tile(selected)
+		return
+	
+	if selected == position:
+		deselect_tile(selected)
+		selected = null
+		return
+		
+	if board_indexes[selected] != board_indexes[position]:
+		deselect_tile(selected)
+		selected = position
+		select_tile(selected)
+		return
+
+	var x1 = selected % tile_count_x
+	var y1 = selected / tile_count_x
+	var x2 = x
+	var y2 = y
+	
+	var j: int
+	j = join_row(x1, y1, x2, y2)
+	if j != CANNOT_JOIN:
+		print("Joining on row ", j)
+		deselect_tile(selected)
+		remove_tile(selected)
+		remove_tile(position)
+		selected = null
+		show_joiner([
+			Vector2(x1, y1),
+			Vector2(x1, j),
+			Vector2(x2, j),
+			Vector2(x2, y2)])
+		check_game_over()
+		return
+	
+	j = join_col(x1, y1, x2, y2)
+	if j != CANNOT_JOIN:
+		print("Joining on col ", j)
+		deselect_tile(selected)
+		remove_tile(selected)
+		remove_tile(position)
+		selected = null
+		show_joiner([
+			Vector2(x1, y1),
+			Vector2(j, y1),
+			Vector2(j, y2),
+			Vector2(x2, y2)])
+		check_game_over()
+		return
+	
+	print("Cannot join")
 			
 func _notification(what) -> void:
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:

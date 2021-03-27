@@ -15,17 +15,14 @@ script = ExtResource( 6 )
 position = Vector2( 512, 384 )
 texture = ExtResource( 3 )
 
-[node name="GridContainer" type="VSplitContainer" parent="background"]
+[node name="GridContainer" type="GridContainer" parent="background"]
 anchor_right = 1.0
 anchor_bottom = 0.3
 margin_left = -512.0
 margin_top = -384.0
 margin_right = -512.0
 margin_bottom = -384.0
-custom_constants/separation = 20
-__meta__ = {
-"_edit_use_anchors_": false
-}
+custom_constants/vseparation = 20
 
 [node name="Title" type="Label" parent="background/GridContainer"]
 margin_right = 1024.0

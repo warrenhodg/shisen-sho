@@ -16,9 +16,9 @@ texture = ExtResource( 2 )
 [node name="Window" parent="." instance=ExtResource( 1 )]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 180.0
+margin_left = 160.0
 margin_top = 100.0
-margin_right = 844.0
+margin_right = 864.0
 margin_bottom = 668.0
 
 [node name="GridContainer" type="GridContainer" parent="Window"]
@@ -36,45 +36,75 @@ __meta__ = {
 }
 
 [node name="Title" type="Label" parent="Window/GridContainer"]
-margin_right = 604.0
+margin_right = 644.0
 margin_bottom = 81.0
 custom_fonts/font = ExtResource( 4 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "SHISEN-SHO"
 align = 1
 
-[node name="btn_small" parent="Window/GridContainer" instance=ExtResource( 3 )]
+[node name="GridContainer" type="GridContainer" parent="Window/GridContainer"]
 margin_top = 91.0
-margin_right = 604.0
-margin_bottom = 187.0
+margin_right = 644.0
+margin_bottom = 508.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/vseparation = 10
+custom_constants/hseparation = 10
+columns = 2
+
+[node name="btn_continue" parent="Window/GridContainer/GridContainer" instance=ExtResource( 3 )]
+margin_right = 317.0
+margin_bottom = 132.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+disabled = true
+text = "continue"
+
+[node name="btn_small" parent="Window/GridContainer/GridContainer" instance=ExtResource( 3 )]
+margin_left = 327.0
+margin_right = 644.0
+margin_bottom = 132.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "small"
 
-[node name="btn_big" parent="Window/GridContainer" instance=ExtResource( 3 )]
-margin_top = 197.0
-margin_right = 604.0
-margin_bottom = 293.0
+[node name="btn_big" parent="Window/GridContainer/GridContainer" instance=ExtResource( 3 )]
+margin_top = 142.0
+margin_right = 317.0
+margin_bottom = 274.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "big"
 
-[node name="btn_help" parent="Window/GridContainer" instance=ExtResource( 3 )]
-margin_top = 303.0
-margin_right = 604.0
-margin_bottom = 399.0
+[node name="btn_help" parent="Window/GridContainer/GridContainer" instance=ExtResource( 3 )]
+margin_left = 327.0
+margin_top = 142.0
+margin_right = 644.0
+margin_bottom = 274.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "help"
 
-[node name="Exit" parent="Window/GridContainer" instance=ExtResource( 3 )]
-margin_top = 409.0
-margin_right = 604.0
-margin_bottom = 505.0
+[node name="btn_about" parent="Window/GridContainer/GridContainer" instance=ExtResource( 3 )]
+margin_top = 284.0
+margin_right = 317.0
+margin_bottom = 416.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "about"
+
+[node name="Exit" parent="Window/GridContainer/GridContainer" instance=ExtResource( 3 )]
+margin_left = 327.0
+margin_top = 284.0
+margin_right = 644.0
+margin_bottom = 416.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Exit"
-[connection signal="pressed" from="Window/GridContainer/btn_small" to="." method="_on_btn_small_pressed"]
-[connection signal="pressed" from="Window/GridContainer/btn_big" to="." method="_on_btn_big_pressed"]
-[connection signal="pressed" from="Window/GridContainer/btn_help" to="." method="_on_btn_help_pressed"]
-[connection signal="pressed" from="Window/GridContainer/Exit" to="." method="_on_Exit_pressed"]
+[connection signal="pressed" from="Window/GridContainer/GridContainer/btn_continue" to="." method="_on_btn_small_pressed"]
+[connection signal="pressed" from="Window/GridContainer/GridContainer/btn_small" to="." method="_on_btn_small_pressed"]
+[connection signal="pressed" from="Window/GridContainer/GridContainer/btn_big" to="." method="_on_btn_big_pressed"]
+[connection signal="pressed" from="Window/GridContainer/GridContainer/btn_help" to="." method="_on_btn_help_pressed"]
+[connection signal="pressed" from="Window/GridContainer/GridContainer/btn_about" to="." method="_on_btn_about_pressed"]
+[connection signal="pressed" from="Window/GridContainer/GridContainer/Exit" to="." method="_on_Exit_pressed"]

@@ -1,0 +1,56 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://assets/shanghai.tres" type="DynamicFont" id=1]
+[ext_resource path="res://assets/background.png" type="Texture" id=2]
+[ext_resource path="res://src/MainMenu/Button.tscn" type="PackedScene" id=3]
+[ext_resource path="res://src/About/About.gd" type="Script" id=4]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource( 4 )
+
+[node name="background" type="Sprite" parent="."]
+position = Vector2( 512, 384 )
+texture = ExtResource( 2 )
+
+[node name="GridContainer" type="GridContainer" parent="background"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -512.0
+margin_top = -384.0
+margin_right = -512.0
+margin_bottom = -384.0
+custom_constants/vseparation = 10
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="background/GridContainer"]
+margin_right = 1024.0
+margin_bottom = 81.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 1 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Shisen-sho"
+align = 1
+
+[node name="Label2" type="Label" parent="background/GridContainer"]
+margin_top = 91.0
+margin_right = 1024.0
+margin_bottom = 508.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 1 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Created By
+Warren Hodgkinson
+
+Tile Artwork based on 
+Cangjie6 from wikipedia"
+align = 1
+
+[node name="OK" parent="background" instance=ExtResource( 3 )]
+margin_left = -121.786
+margin_top = 230.217
+margin_right = 122.214
+margin_bottom = 321.217
+text = "OK"
+[connection signal="pressed" from="background/OK" to="." method="_on_OK_pressed"]
