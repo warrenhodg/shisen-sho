@@ -2,8 +2,8 @@ extends Node2D
 class_name Game
 
 const TILE_TYPE_COUNT = 42
-const SCREEN_SIZE_X = 1024
-const SCREEN_SIZE_Y = 768
+const SCREEN_SIZE_X = 1920
+const SCREEN_SIZE_Y = 1080
 const ORIGINAL_TILE_WIDTH = 617
 const ORIGINAL_TILE_HEIGHT = 760
 const GRID_MARGIN_WIDTH = 20
@@ -11,6 +11,9 @@ const GRID_MARGIN_HEIGHT = 20
 const CANNOT_JOIN = -2
 const LINE_BASE_WIDTH = 50
 const LONG_PRESS_MS = 500
+const NORMAL_COLOR = Color(1, 1, 1)
+const SELECT_COLOR = Color(1, 0.5, 0.5)
+const HIGHLIGHT_COLOR = Color(1, 1, 0.5)
 
 var rng = RandomNumberGenerator.new()
 var tile_blueprint: = preload("res://src/Game/Tile.tscn")
@@ -32,6 +35,9 @@ var mouse_down_time = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	get_tree().set_auto_accept_quit(false)
+	get_tree().set_quit_on_go_back(false)
+
 	load_tile_textures()
 	
 	if Global.tile_count_x == Global.LOAD_GAME:
@@ -131,9 +137,7 @@ func highlight_tile_type(tile_type: int) -> void:
 		if tile == null:
 			continue
 
-		tile.modulate.r8 = 255
-		tile.modulate.g8 = 255
-		tile.modulate.b8 = 128
+		tile.modulate = HIGHLIGHT_COLOR
 
 func dehighlight_tile_type(tile_type: int) -> void:
 	var tiles = same_tiles[tile_type]
@@ -146,9 +150,7 @@ func dehighlight_tile_type(tile_type: int) -> void:
 		if tile == null:
 			continue
 
-		tile.modulate.r8 = 255
-		tile.modulate.g8 = 255
-		tile.modulate.b8 = 255
+		tile.modulate = NORMAL_COLOR
 
 func select_tile(position) -> void:
 	if position == null:
@@ -158,9 +160,7 @@ func select_tile(position) -> void:
 	if tile == null:
 		return
 
-	tile.modulate.r8 = 255
-	tile.modulate.g8 = 196
-	tile.modulate.b8 = 196
+	tile.modulate = SELECT_COLOR
 
 func deselect_tile(position) -> void:
 	if position == null:
@@ -170,9 +170,7 @@ func deselect_tile(position) -> void:
 	if tile == null:
 		return
 
-	tile.modulate.r8 = 255
-	tile.modulate.g8 = 255
-	tile.modulate.b8 = 255
+	tile.modulate = NORMAL_COLOR
 
 func remove_tile(position: int) -> void:
 	var tile = board_tiles[position]
@@ -436,9 +434,15 @@ func handle_left_click(mouse_event: InputEventMouseButton) -> void:
 	print("Cannot join")
 
 func _notification(what) -> void:
-	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
-		get_tree().set_auto_accept_quit(false)
-		get_tree().change_scene("res://src/MainMenu/MainMenu.tscn")
+	match what:
+		MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
+			quit_game()
+		
+		MainLoop.NOTIFICATION_WM_FOCUS_IN:
+			save_game()
+			
+		MainLoop.NOTIFICATION_WM_GO_BACK_REQUEST:
+			quit_game()
 
 func delete_save_game() -> void:
 	var g = File.new()
@@ -500,3 +504,4 @@ func can_move() -> bool:
 			if join_col(x1, y1, x2, y2) != CANNOT_JOIN:
 				return true
 	return false
+	

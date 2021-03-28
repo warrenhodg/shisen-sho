@@ -1,41 +1,73 @@
 extends Node2D
 
-const instructions_0 = "Remove matching tiles\nwith at most 3 lines"
-const instructions_1 = "Remove adjacent tiles\nwith 1 line"
-const instructions_2 = "Lines cannot pass\nthrough other tiles"
-const instructions_3 = "Remove all tiles\nto win"
-
 var state = 0
+var scenes: Array
+var instructions: Array
 
 func _ready() -> void:
+	get_tree().set_auto_accept_quit(false)
+	get_tree().set_quit_on_go_back(false)
+
 	state = 0
+	$background/Back.disabled = true
+	
+	instructions = [
+		"Tap a tile to\nselect it",
+		"Remove matching tiles\nwith at most 3 lines",
+		"Remove all tiles\nto win",
+		"Remove adjacent tiles\nwith 1 line",
+		"Lines cannot pass\nthrough other tiles",
+		"Internal tiles can\nbe removed",
+		"Hold a tile to highlight\nsimilar tiles"
+	]
+	scenes = [
+		$background/Help_select,
+		$background/Help_3_lines,
+		null,
+		$background/Help_adjacent,
+		$background/Help_illegal,
+		$background/Help_internal,
+		$background/Help_highlight
+	]
+	
 	show_help()
 
 func show_help() -> void:
-	match state:
-		0:
-			$background/GridContainer/Instructions.text = instructions_0
-			$background/Help_0.visible = true
-			$background/Help_1.visible = false
-			$background/Help_2.visible = false
-		1:
-			$background/GridContainer/Instructions.text = instructions_1
-			$background/Help_0.visible = false
-			$background/Help_1.visible = true
-			$background/Help_2.visible = false
-		2:
-			$background/GridContainer/Instructions.text = instructions_2
-			$background/Help_0.visible = false
-			$background/Help_1.visible = false
-			$background/Help_2.visible = true
-		3:
-			$background/GridContainer/Instructions.text = instructions_3
-			$background/Help_0.visible = false
-			$background/Help_1.visible = false
-			$background/Help_2.visible = false
-		_:
-			get_tree().change_scene("res://src/MainMenu/MainMenu.tscn")
+	if state >= instructions.size():
+		get_tree().change_scene("res://src/MainMenu/MainMenu.tscn")
+		return
+		
+	$background/GridContainer/Instructions.text = instructions[state]
+	for i in range(instructions.size()):
+		var scene = scenes[i]
+		if scene == null:
+			continue
+		scene.visible = (i == state)
+
+func _on_Back_pressed() -> void:
+	if state == 0:
+		return
+	state -= 1
+	$background/Back.disabled = (state == 0)
+	show_help()
 
 func _on_Next_pressed() -> void:
-	state = state + 1
+	$background/Back.disabled = false
+	state += 1
 	show_help()
+
+func quit_help() -> void:
+	get_tree().change_scene("res://src/MainMenu/MainMenu.tscn")
+	
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		quit_help()
+
+func _notification(what) -> void:
+	match what:
+		MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
+			quit_help()
+		
+		MainLoop.NOTIFICATION_WM_GO_BACK_REQUEST:
+			quit_help()
+

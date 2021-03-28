@@ -10,8 +10,8 @@ func check_for_existing_save() -> void:
 	$Window/GridContainer/GridContainer/btn_continue.disabled = not g.file_exists(Global.SAVE_FILE_NAME)
 
 func _on_btn_big_pressed() -> void:
-	Global.tile_count_x = 24
-	Global.tile_count_y = 14
+	Global.tile_count_x = 18
+	Global.tile_count_y = 10
 	get_tree().change_scene("res://src/Game/Game.tscn")
 
 func _on_btn_continue_pressed() -> void:

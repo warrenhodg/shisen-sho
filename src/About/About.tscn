@@ -9,48 +9,35 @@
 script = ExtResource( 4 )
 
 [node name="background" type="Sprite" parent="."]
-position = Vector2( 512, 384 )
+position = Vector2( 960, 540 )
 texture = ExtResource( 2 )
 
-[node name="GridContainer" type="GridContainer" parent="background"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = -512.0
-margin_top = -384.0
-margin_right = -512.0
-margin_bottom = -384.0
-custom_constants/vseparation = 10
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Label" type="Label" parent="background/GridContainer"]
-margin_right = 1024.0
-margin_bottom = 81.0
+[node name="Label2" type="Label" parent="background"]
+margin_left = -960.0
+margin_top = -540.0
+margin_right = 960.0
+margin_bottom = 129.0
 size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 1 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
-text = "Shisen-sho"
-align = 1
+text = "
+SHISEN-SHO
 
-[node name="Label2" type="Label" parent="background/GridContainer"]
-margin_top = 91.0
-margin_right = 1024.0
-margin_bottom = 508.0
-size_flags_horizontal = 3
-custom_fonts/font = ExtResource( 1 )
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-text = "Created By
+Created By
 Warren Hodgkinson
+github.com/warrenhodg/shisen-sho
 
 Tile Artwork based on 
 Cangjie6 from wikipedia"
 align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="OK" parent="background" instance=ExtResource( 3 )]
-margin_left = -121.786
-margin_top = 230.217
-margin_right = 122.214
-margin_bottom = 321.217
+margin_left = -119.116
+margin_top = 310.307
+margin_right = 124.884
+margin_bottom = 401.307
 text = "OK"
 [connection signal="pressed" from="background/OK" to="." method="_on_OK_pressed"]
