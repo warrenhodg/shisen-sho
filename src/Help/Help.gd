@@ -34,7 +34,7 @@ func _ready() -> void:
 
 func show_help() -> void:
 	if state >= instructions.size():
-		get_tree().change_scene("res://src/MainMenu/MainMenu.tscn")
+		get_tree().change_scene("res://src/main_menu/main_menu.tscn")
 		return
 		
 	$background/GridContainer/Instructions.text = instructions[state]
@@ -57,7 +57,7 @@ func _on_Next_pressed() -> void:
 	show_help()
 
 func quit_help() -> void:
-	get_tree().change_scene("res://src/MainMenu/MainMenu.tscn")
+	get_tree().change_scene("res://src/main_menu/main_menu.tscn")
 	
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):

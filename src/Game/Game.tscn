@@ -1,9 +1,10 @@
 [gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://assets/background.png" type="Texture" id=1]
-[ext_resource path="res://src/Game/Game.gd" type="Script" id=2]
+[ext_resource path="res://src/game/game.gd" type="Script" id=2]
 
 [node name="Game" type="Node2D"]
+position = Vector2( 1, 0 )
 script = ExtResource( 2 )
 
 [node name="background" type="Sprite" parent="."]

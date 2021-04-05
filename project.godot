@@ -12,18 +12,29 @@ _global_script_classes=[ {
 "base": "Node2D",
 "class": "Game",
 "language": "GDScript",
-"path": "res://src/Game/Game.gd"
+"path": "res://src/game/game.gd"
+}, {
+"base": "Reference",
+"class": "Join",
+"language": "GDScript",
+"path": "res://src/logic/join.gd"
+}, {
+"base": "Reference",
+"class": "Shisensho",
+"language": "GDScript",
+"path": "res://src/logic/shisensho.gd"
 } ]
 _global_script_class_icons={
-"Game": ""
+"Game": "",
+"Join": "",
+"Shisensho": ""
 }
 
 [application]
 
 config/name="Shisen-Sho"
 config/description="A Mahjongg type game"
-run/main_scene="res://src/MainMenu/MainMenu.tscn"
-run/disable_stdout=true
+run/main_scene="res://src/main_menu/main_menu.tscn"
 run/disable_stderr=true
 boot_splash/image="res://assets/splash.png"
 config/icon="res://assets/icon.png"
@@ -32,6 +43,10 @@ config/windows_native_icon="res://assets/icon.ico"
 [autoload]
 
 Global="*res://src/Global.gd"
+
+[debug]
+
+gdscript/warnings/integer_division=false
 
 [display]
 

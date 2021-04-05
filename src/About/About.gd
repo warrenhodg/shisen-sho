@@ -5,10 +5,10 @@ func _ready() -> void:
 	get_tree().set_quit_on_go_back(false)
 
 func _on_OK_pressed() -> void:
-	get_tree().change_scene("res://src/MainMenu/MainMenu.tscn")
+	get_tree().change_scene("res://src/main_menu/main_menu.tscn")
 
 func quit_about() -> void:
-	get_tree().change_scene("res://src/MainMenu/MainMenu.tscn")
+	get_tree().change_scene("res://src/main_menu/main_menu.tscn")
 	
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
