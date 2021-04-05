@@ -28,7 +28,6 @@ func new_game(_size: Vector2, tile_type_count: int) -> void:
 	while true:
 		self._generate_random_board(rng, tile_type_count)
 		if self._can_win(stop_ticks):
-			print("can win")
 			break
 
 	self._emit_tiles_created()
